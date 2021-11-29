@@ -1,0 +1,13 @@
+.mapBlock{
+    height: 65%;
+    width: auto;
+}
+.modalContainer{
+    width: 70% !important;
+    top:10px;
+}
+.routeTableData{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
