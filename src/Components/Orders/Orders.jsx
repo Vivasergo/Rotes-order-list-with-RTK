@@ -4,8 +4,11 @@ import Style from './style.module.css'
 import { OrderModal } from '../Modal/OrderModal'
 import { CurrentOrdersTable } from './CurrentOrdersTable/CurrentOrdersTable'
 import _ from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeLoadingStatus } from '../../Redux/Slices/LoadingSlice'
+import { createError } from '../../Redux/Slices/ErrorsSlice'
 
-const Orders = ({ setError, setIsLoading, isAuth }) => {
+const Orders = ({ setError, setIsLoading }) => {
     const [orders, setOrders] = useState([])
     const [orderForModal, setOrderForModal] = useState({})
     const [route, setRoute] = useState({})
@@ -13,13 +16,15 @@ const Orders = ({ setError, setIsLoading, isAuth }) => {
     const [finalPointData, setFinalPointData] = useState({})
     const [isModalVisible, setIsModalVisible] = useState(false)
 
+    const dispatch = useDispatch()
+
     useEffect(() => {
         const fetchOrders = async () => {
-            setIsLoading(true)
+            dispatch(changeLoadingStatus(true))
             const response = await api.getOrders()
-            setIsLoading(false)
+            dispatch(changeLoadingStatus(false))
             if (response.status.toString()[0] === '4') {
-                setError((prevError) => ({ ...prevError, isError: true, errorMessage: response.data.detail }))
+                dispatch(createError(response.data.detail ))
             } else if (response.status === 200) {
                 setOrders(response.data)
             }
@@ -30,10 +35,10 @@ const Orders = ({ setError, setIsLoading, isAuth }) => {
 
     const showModal = async (order) => {
         if (!_.isEqual(order, orderForModal)) {
-            setIsLoading(true)
+            dispatch(changeLoadingStatus(true))
             setOrderForModal((prevState) => ({ ...prevState, ...order }))
             await handleRoute(order.source, order.destination)
-            setIsLoading(false)
+            dispatch(changeLoadingStatus(false))
         }
 
         setIsModalVisible(true)

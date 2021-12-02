@@ -1,7 +1,7 @@
 import './App.css'
 import Login from './Components/Login/Login'
 import Orders from './Components/Orders/Orders'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Logout } from './Components/Logout/Logout'
 import { Loading } from './Components/Loading/Loading'
 import { useDispatch } from 'react-redux'
@@ -10,11 +10,12 @@ import { authorized } from './Redux/Slices/AuthSlice'
 
 function App() {
     // const [isAuth, setIsAuth] = useState(false)
-    const [error, setError] = useState({ isError: false, errorMessage: '' })
-    const [isLoading, setIsLoading] = useState(false)
+    // const [error, setError] = useState({ isError: false, errorMessage: '' })
 
     const dispatch = useDispatch()
     const isAuth = useSelector((state) => state.authentication.isAuth)
+    const isLoading = useSelector((state) => state.loading.isLoading)
+    const { isError, errorMessage } = useSelector((state) => state.error)
 
     useEffect(() => {
         if (sessionStorage['accessToken']) {
@@ -23,11 +24,11 @@ function App() {
     }, [dispatch])
 
     useEffect(() => {
-        if (error.isError) {
+        if (isError) {
             sessionStorage.clear()
             authorized(false)
         }
-    }, [error.isError])
+    }, [isError])
 
     return (
         <div className='App'>
@@ -38,11 +39,11 @@ function App() {
             {isAuth && (
                 <>
                     <Logout />
-                    <Orders setError={setError} setIsLoading={setIsLoading} isAuth={isAuth} />
+                    <Orders isAuth={isAuth} />
                 </>
             )}
-            {!isAuth && <Login setError={setError} setIsLoading={setIsLoading} />}
-            {error.isError && <div className='error-message'>{error.errorMessage}</div>}
+            {!isAuth && <Login />}
+            {isError && <div className='error-message'>{errorMessage}</div>}
         </div>
     )
 }
