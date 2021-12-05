@@ -8,7 +8,6 @@ const errorsSlice = createSlice({
     initialState,
     reducers: {
         createError: (state, action) => {
-            console.log('action', action)
             state.isError = true
             state.errorMessage = action.payload
         },
@@ -19,7 +18,6 @@ const errorsSlice = createSlice({
     },
     extraReducers: (builder)=>{
         builder.addCase(doLogout, (state, action) => {
-            console.log('logout')
             state.isError = false
             state.errorMessage = ''
         })

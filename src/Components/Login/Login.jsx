@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button, Input } from 'antd'
 import style from './Style.module.css'
 import { useDispatch } from 'react-redux'
-import { doLogin } from '../../Redux/Slices/AuthSlice'
+import { doLogin } from "../../Redux/Thunks";
 
 const Login = ({ setIsAuth, setError, setIsLoading }) => {
     const [formData, setFormData] = useState({ username: '', password: '' })
@@ -17,16 +17,6 @@ const Login = ({ setIsAuth, setError, setIsLoading }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         dispatch(doLogin(formData))
-        // setIsLoading(true)
-        // const response = await api.login(formData)
-        // setIsLoading(false)
-        // if (response.status.toString()[0] === '4') {
-        //     setError((prevError) => ({ ...prevError, isError: true, errorMessage: response.data.detail }))
-        // } else if (response.status === 200) {
-        //     setError((prevError) => ({ ...prevError, isError: false, errorMessage: '' }))
-        //     sessionStorage['accessToken'] = response.data.access_token
-        //     setIsAuth(true)
-        // }
     }
 
     return (
