@@ -14,7 +14,7 @@ const Login = ({ setIsAuth, setError, setIsLoading }) => {
         setFormData({ ...formData, [event.target.name]: event.target.value })
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault()
         dispatch(doLogin(formData))
     }

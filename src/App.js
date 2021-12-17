@@ -7,10 +7,9 @@ import { Loading } from './Components/Loading/Loading'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { authorized } from './Redux/Slices/AuthSlice'
+import { doLogout } from "./Redux/Shared/ActionCreators";
 
 function App() {
-    // const [isAuth, setIsAuth] = useState(false)
-    // const [error, setError] = useState({ isError: false, errorMessage: '' })
 
     const dispatch = useDispatch()
     const isAuth = useSelector((state) => state.authentication.isAuth)
@@ -21,7 +20,11 @@ function App() {
         if (sessionStorage['accessToken']) {
             dispatch(authorized(true))
         }
-    }, [dispatch])
+        else {
+            dispatch(doLogout())
+
+        }
+    }, [sessionStorage['accessToken']])
 
     useEffect(() => {
         if (isError) {
@@ -33,16 +36,18 @@ function App() {
     return (
         <div className='App'>
             <div className='App-bg'></div>
-            {isLoading && <Loading />}
+
+            {isLoading && <Loading/>}
+
             <h1>Welcome to the order route app!</h1>
 
             {isAuth && (
                 <>
-                    <Logout />
-                    <Orders isAuth={isAuth} />
+                    <Logout/>
+                    <Orders/>
                 </>
             )}
-            {!isAuth && <Login />}
+            {!isAuth && <Login/>}
             {isError && <div className='error-message'>{errorMessage}</div>}
         </div>
     )

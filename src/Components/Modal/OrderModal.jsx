@@ -6,17 +6,20 @@ import L from 'leaflet'
 import { DestinationPointTable } from '../RoutePointsTable/DestinationPointTable'
 import moment from 'moment'
 import { StartPointTable } from '../RoutePointsTable/StartPointTable'
+import { useSelector } from "react-redux";
 
 export const OrderModal = ({
     isModalVisible,
     handleOk,
     handleCancel,
-    routeData,
-    startPointData,
-    finalPointData,
-    orderData,
 }) => {
-    const [[startLon, startLat], [endLon, endLat]] = routeData.metadata.query.coordinates
+
+    const route = useSelector((state) => state.modalData.route)
+    const orderData = useSelector(state => state.modalData.orderForModal)
+    const startPointData = useSelector(state => state.modalData.startPointData)
+    const finalPointData = useSelector(state => state.modalData.finalPointData)
+
+    const [[startLon, startLat], [endLon, endLat]] = route.metadata.query.coordinates
 
     useEffect(() => {
 
@@ -42,7 +45,7 @@ export const OrderModal = ({
             title: `Final destination: ${finalPointData.display_name}`,
         }).addTo(myMap)
 
-        const featureLayer = L.geoJson(routeData, {})
+        const featureLayer = L.geoJson(route, {})
 
         myMap.addLayer(featureLayer)
     // eslint-disable-next-line react-hooks/exhaustive-deps

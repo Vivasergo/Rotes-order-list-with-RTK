@@ -3,9 +3,12 @@ import { Button, Table } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import style from './Style.module.css'
+import { useSelector } from "react-redux";
 
-export const CurrentOrdersTable = ({ orders, showModal }) => {
+export const CurrentOrdersTable = ({ showModal }) => {
     const data = []
+
+    const orders = useSelector((state) => state.orders)
 
     for (let orderItem of orders) {
         data.push({
@@ -49,7 +52,7 @@ export const CurrentOrdersTable = ({ orders, showModal }) => {
 
     return (
         <div className={style.mainOrdersTable}>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={data}/>
         </div>
     )
 }

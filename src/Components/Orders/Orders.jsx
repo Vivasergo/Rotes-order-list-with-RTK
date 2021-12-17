@@ -1,44 +1,38 @@
 import React, { useEffect, useState } from 'react'
-import { api } from '../../Service/api'
 import Style from './style.module.css'
 import { OrderModal } from '../Modal/OrderModal'
 import { CurrentOrdersTable } from './CurrentOrdersTable/CurrentOrdersTable'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeLoadingStatus } from '../../Redux/Slices/LoadingSlice'
-import { createError } from '../../Redux/Slices/ErrorsSlice'
+import { getModalOrderData, getOrders } from "../../Redux/Thunks/";
 
-const Orders = ({ setError, setIsLoading }) => {
-    const [orders, setOrders] = useState([])
-    const [orderForModal, setOrderForModal] = useState({})
-    const [route, setRoute] = useState({})
-    const [startPointData, setStartPointData] = useState({})
-    const [finalPointData, setFinalPointData] = useState({})
+const Orders = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            dispatch(changeLoadingStatus(true))
-            const response = await api.getOrders()
-            dispatch(changeLoadingStatus(false))
-            if (response.status.toString()[0] === '4') {
-                dispatch(createError(response.data.detail ))
-            } else if (response.status === 200) {
-                setOrders(response.data)
-            }
-        }
-        fetchOrders()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        dispatch(getOrders())
     }, [])
 
+    const orders = useSelector((state) => state.orders)
+    const orderForModal = useSelector(state => state.modalData.orderForModal)
+    const { isError } = useSelector((state) => state.error)
+
+    useEffect(() => {
+        console.log('!isError', !isError)
+        console.log('!!orderForModal.id', !!orderForModal.id)
+        console.log('orderForModal', orderForModal)
+
+        if (!isError && !!orderForModal.id) {
+            setIsModalVisible(true)
+        }
+    }, [isError, orderForModal.id])
+
     const showModal = async (order) => {
+
         if (!_.isEqual(order, orderForModal)) {
-            dispatch(changeLoadingStatus(true))
-            setOrderForModal((prevState) => ({ ...prevState, ...order }))
-            await handleRoute(order.source, order.destination)
-            dispatch(changeLoadingStatus(false))
+            await dispatch(getModalOrderData(order))
         }
 
         setIsModalVisible(true)
@@ -52,15 +46,6 @@ const Orders = ({ setError, setIsLoading }) => {
         setIsModalVisible(false)
     }
 
-    const handleRoute = async (source, destination) => {
-        const responseRoute = await api.getRoute(source, destination)
-        const responseStartPointData = await api.getRoutePoint(source)
-        const responseFinalPointData = await api.getRoutePoint(destination)
-
-        setStartPointData((prevState) => ({ ...prevState, ...responseStartPointData.data }))
-        setFinalPointData((prevState) => ({ ...prevState, ...responseFinalPointData.data }))
-        setRoute((prevState) => ({ ...prevState, ...responseRoute.data }))
-    }
 
     return (
         <div>
@@ -71,16 +56,12 @@ const Orders = ({ setError, setIsLoading }) => {
                 <div className='orders-list'>
                     {isModalVisible && (
                         <OrderModal
-                            routeData={route}
                             isModalVisible={isModalVisible}
                             handleOk={handleOk}
                             handleCancel={handleCancel}
-                            startPointData={startPointData}
-                            finalPointData={finalPointData}
-                            orderData={orderForModal}
                         />
                     )}
-                    <CurrentOrdersTable orders={orders} showModal={showModal} />
+                    <CurrentOrdersTable showModal={showModal}/>
                 </div>
             )}
         </div>

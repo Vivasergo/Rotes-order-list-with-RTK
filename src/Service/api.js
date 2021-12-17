@@ -13,7 +13,7 @@ export const api = {
         }
     },
 
-    async getOrders() {
+    async fetchOrders() {
         const token = sessionStorage['accessToken']
         try {
             const response = await axios.get('https://api.demo.cargo-speed.pl/demo/api/v1/orders/many', {
@@ -25,7 +25,7 @@ export const api = {
         }
     },
 
-    async getRoute(source, destination) {
+    async fetchRoute(source, destination) {
         try {
             const response = await axios.get(
                 `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248e866aa5d7899451aa8e13709ccea605c&start=${source.lon},${source.lat}&end=${destination.lon},${destination.lat}`
@@ -36,7 +36,7 @@ export const api = {
         }
     },
 
-    async getRoutePoint({ lon, lat }) {
+    async fetchRoutePoint({ lon, lat }) {
         try {
             const response = await axios.get(
                 `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=pl`
