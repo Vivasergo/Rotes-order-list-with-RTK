@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { doLogout } from "../Shared/ActionCreators";
 
 const initialState = []
 
@@ -7,8 +8,16 @@ const orderSlice = createSlice({
     initialState,
     reducers: {
         createOrders: (state, action) => {
-           return state = [...action.payload]
+           // noinspection JSUnusedAssignment
+            return state = [...action.payload]
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(doLogout, (state) => {
+               // noinspection JSUnusedAssignment
+                return state = initialState
+            })
     },
 })
 

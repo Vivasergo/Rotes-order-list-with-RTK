@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './App.css'
 import Login from './Components/Login/Login'
 import Orders from './Components/Orders/Orders'
@@ -15,23 +16,18 @@ function App() {
     const isAuth = useSelector((state) => state.authentication.isAuth)
     const isLoading = useSelector((state) => state.loading.isLoading)
     const { isError, errorMessage } = useSelector((state) => state.error)
+    const sessionData = sessionStorage['accessToken'];
 
     useEffect(() => {
-        if (sessionStorage['accessToken']) {
+        if (sessionData) {
             dispatch(authorized(true))
         }
         else {
             dispatch(doLogout())
 
         }
-    }, [sessionStorage['accessToken']])
+    }, [sessionData])
 
-    useEffect(() => {
-        if (isError) {
-            sessionStorage.clear()
-            authorized(false)
-        }
-    }, [isError])
 
     return (
         <div className='App'>

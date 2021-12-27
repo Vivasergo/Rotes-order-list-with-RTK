@@ -20,9 +20,6 @@ const Orders = () => {
     const { isError } = useSelector((state) => state.error)
 
     useEffect(() => {
-        console.log('!isError', !isError)
-        console.log('!!orderForModal.id', !!orderForModal.id)
-        console.log('orderForModal', orderForModal)
 
         if (!isError && !!orderForModal.id) {
             setIsModalVisible(true)
@@ -34,8 +31,9 @@ const Orders = () => {
         if (!_.isEqual(order, orderForModal)) {
             await dispatch(getModalOrderData(order))
         }
-
-        setIsModalVisible(true)
+        else{
+            setIsModalVisible(true)
+        }
     }
 
     const handleOk = () => {
